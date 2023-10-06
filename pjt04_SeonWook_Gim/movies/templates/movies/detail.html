@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>DETAIL PAGE</h1>
+  {{ movie.title }}
+  {{ movie.description }}
+  <hr>
+  <a class="btn btn-secondary" href="{% url 'movies:update' movie.pk %}">UPDATE</a>
+  <form class= "btn btn-danger" action="{% url 'movies:delete' movie.pk %}" method="POST">
+    {% csrf_token %}
+    DELETE
+  </form>
+  <hr>
+  <a class="btn btn-primary" href="{% url 'movies:index' %}">BACK</a>
+{% endblock content %}

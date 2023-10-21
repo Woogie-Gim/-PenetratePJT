@@ -1,0 +1,33 @@
+<h1>Follower List</h1>
+<a href="{% url "accounts:profile" you %}">Back</a>
+<hr>
+{% if followers|length %}
+{% for follower in followers %}
+    <h1>
+    <ul>
+        <li>
+            <a href="{% url "accounts:profile" user %}">{{ follower }}</a>
+        </li>
+    </ul>
+    </h1>
+{% endfor %}
+{% else %}
+    <p>인원이 없습니다.</p>
+{% endif %}
+
+<h1>Following List</h1>
+<a href="{% url "accounts:profile" you %}">Back</a>
+<hr>
+{% if followings|length %}
+{% for following in followings %}
+    <h1>
+    <ul>
+        <li>
+            <a href="{% url "accounts:profile" user %}">{{ following }}</a>
+        </li>
+    </ul>
+    </h1>
+{% endfor %}
+{% else %}
+    <p>인원이 없습니다.</p>
+{% endif %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+
+{% block content %}
+  <h1>DETAIL PAGE</h1>
+  {% if movie.image %}
+    <img src="{{ movie.image.url }}" alt="">
+  {% endif %}
+  <p>
+    <a href="{% url 'accounts:profile' movie.user %}">{{ movie.user }}</a>님 작성
+  </p>
+  <h2>
+    {{ movie.title }}
+  </h2>
+  <p>
+    {{ movie.description }}
+  </p>
+  <p>
+    {{ movie.genre }}
+  </p>
+  <p>
+    {{ movie.score }}
+  </p>
+  <hr>
+  {% if movie.user == request.user %}
+  <div class="btn-group">
+    <a href="{% url 'movies:update' movie.pk %}" class="btn btn-secondary mr-2">UPDATE</a>
+    <form action="{% url 'movies:delete' movie.pk %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">DELETE</button>
+    </form>
+  </div>
+  {% endif %}
+  <hr>
+  <h3>댓글 목록</h3>
+  {% for comment in comments %}
+    <p>{{ comment.content }} - {{ comment.user }}</p>
+    {% if comment.user == request.user %}
+      <form action="{% url 'movies:comments_delete' movie.pk comment.pk %}" method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
+      </form>
+    {% endif %}
+    <div class="container">
+      <ul class="list-group">
+        <span>
+          {% if recomments %}
+            ReComment<p>
+              {% for recomment in comment.recomment_set.all %}
+                <li class="list-group-item">
+                  <span>{{ recomment.user }} - {{ recomment.content }}</span>
+                </li>
+              {% endfor %}
+            </p>
+          {% endif %}
+        </span>
+        <form action="{% url 'movies:recomments_create' movie.pk comment.pk %}" method="POST" class="list-group-item" style="display: flex;">
+          {% csrf_token %}
+          {{recommet_form}}
+          <input type="submit" value="ReComment" class="btn btn-warning btn-sm" />
+        </form>
+      </ul>
+    </div>
+  {% endfor %}
+  {% if user.is_authenticated %}
+    <form action="{% url 'movies:comments_create' movie.pk %}" method="POST">
+      {% csrf_token %}
+      {{ comment_form }}
+      <input type="submit" value="Comment" class="btn btn-primary btn-sm" />
+    </form>
+  {% endif %}
+  <hr />
+  <hr>
+  <a class="btn btn-primary"href="{% url "movies:index" %}">BACK</a>
+{% endblock content %}
+
+

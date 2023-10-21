@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ person.username }}님의 프로필</h1>
+<h2>영화 목록</h2>
+<div class="alert alert-secondary" role="alert">
+  {% for movie in movies %}
+    <a href="{% url "movies:detail" movie.pk %}">{{ movie.title }}</a>
+  {% endfor %}
+</div>
+<p></p>
+<p></p>
+<h1>좋아요 누른 개수 : {{ person.like_movies.all|length }}</h1>
+<p class="d-inline-flex gap-1">
+  <a data-bs-toggle="collapse" href="#liked_list" role="button" aria-expanded="false" aria-controls="liked_list">
+    좋아요 영화 확인
+  </a>
+</p>
+<div class="collapse" id="liked_list">
+  <div class="card card-body">
+    <h1>Liked Movie List</h1>
+    <hr>
+    {% if person.like_movies.all|length %}
+    <ul>
+        <li>
+            <h1>
+                {% for movie in person.like_movies.all %}
+                    <a href="{% url "movies:detail" movie.pk %}">{{ movie.title }}</a>
+                {% endfor %}
+            </h1>
+        </li>
+    </ul>
+    {% else %}
+    <p>좋아요한 영화가 없습니다.</p>
+    {% endif %}
+  </div>
+</div>
+<p></p>
+<div style="display: flex; justify-content:space-between;"> 
+  <div>
+    <h4>
+      <div style="display: flex; justify-content:space-between;"> 
+        <p class="d-inline-flex gap-1">
+          <a data-bs-toggle="collapse" href="#following" role="button" aria-expanded="false" aria-controls="following">
+            팔로잉
+          </a>
+          <h4>
+            : {{ person.followings.all|length }}
+          </h4>
+        </div>
+      </p>
+      <div class="collapse" id="following">
+        <div class="card card-body">
+          <h1>Following List</h1>
+          <hr>
+          {% if followings|length %}
+          {% for following in followings %}
+              <h1>
+              <ul>
+                  <li>
+                      <a href="{% url "accounts:profile" user %}">{{ following }}</a>
+                  </li>
+              </ul>
+              </h1>
+          {% endfor %}
+          {% else %}
+              <p>인원이 없습니다.</p>
+          {% endif %}
+      </div>
+    </h4>
+    <div>
+      <h4>
+        <div style="display: flex; justify-content:space-between;"> 
+          <p class="d-inline-flex gap-1">
+            <a data-bs-toggle="collapse" href="#follower" role="button" aria-expanded="false" aria-controls="follower">
+              팔로워
+            </a>
+            <h4>
+              : {{ person.followers.all|length }}
+            </h4>
+          </div>
+        </p>
+        <div class="collapse" id="follower">
+          <div class="card card-body">
+            <h1>Follower List</h1>
+              {% if followers|length %}
+              {% for follower in followers %}
+                  <h1>
+                  <ul>
+                      <li>
+                          <a href="{% url "accounts:profile" user %}">{{ follower }}</a>
+                      </li>
+                  </ul>
+                  </h1>
+              {% endfor %}
+              {% else %}
+                  <p>인원이 없습니다.</p>
+              {% endif %}
+        </div>
+      </h4>
+  </div>
+  {% if user != person %}
+    <div>
+      <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+        {% csrf_token %}
+        {% if user in person.followers.all %}
+          <button class="btn btn-outline-primary btn-sm">팔로우 취소</button>
+        {% else %}
+          <button class="btn btn-primary btn-sm">팔로우</button>
+        {% endif %}
+      </form>
+    </div>
+  {% endif %}
+
+<p></p>
+<a href="{% url 'movies:index' %}" class="btn btn-secondary btn-sm">이전</a>
+{% endblock  %}

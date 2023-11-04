@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>DETAIL PAGE</h1>
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <img src="{{ movie.poster_path }}" class="img-fluid" alt="" />
+    </div>
+    <div class="col-lg-8">
+      <div class="card g-4">
+        <div class="card-body">
+          <h5 class="card-title">{{ movie.title }}</h5>
+          <p class="card-text">{{ movie.overview }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" >
+            🎞 :{% for genre_item in genre %}
+            <a href="{% url "movies:recommended" genre_item.name %}">{{ genre_item.name }}</a>
+            {% endfor %}
+          </li>
+          <li class="list-group-item">🍅 인기 점수 : {{ movie.popularity }}</li>
+          <li class="list-group-item">🍿 투표 수 : {{ movie.vote_count }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+<!-- index.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Movies</h1>
+
+  <label for="sort_by">정렬 기준:</label>
+  <select name="sort_by" id="sort_by">
+    <option value="popularity" {% if sort_by == 'popularity' %}selected{% endif %}>인기 점수</option>
+    <option value="vote_count" {% if sort_by == 'vote_count' %}selected{% endif %}>투표 수</option>
+  </select>
+  
+  <label for="sort_order">정렬 방향:</label>
+  <select name="sort_order" id="sort_order">
+    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>높은순</option>
+    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>낮은순</option>
+  </select>
+
+  <button id="sort-button">정렬</button>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    {% for movie in movies %}
+      <div class="col">
+        <div class="card g-4" style="width: 18rem;">
+          <img src="{{ movie.poster_path }}" class="card-img-top" alt="" />
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+            <p class="card-text">{{ movie.overview|truncatechars:100 }}</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" >
+              🎞 : {% for genre in movie.genres.all %}
+                <a href="{% url 'movies:recommended' genre.name %}">{{ genre.name }}</a>
+                {% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </li>
+            <li class="list-group-item">🍅 인기 점수 : {{ movie.popularity }}</li>
+            <li class="list-group-item">🍿 투표 수 : {{ movie.vote_count }}</li>
+          </ul>
+          <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">DETAIL</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("sort-button").addEventListener("click", function() {
+        var sortBy = document.getElementById("sort_by").value;
+        var sortOrder = document.getElementById("sort_order").value;
+        window.location.href = "{% url 'movies:index' %}?sort_by=" + sortBy + "&sort_order=" + sortOrder;
+      });
+    });
+  </script>
+{% endblock %}
